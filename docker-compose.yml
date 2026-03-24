@@ -1,4 +1,5 @@
 services:
+  # Servidor para el "Hola Mundo" 
   apache-php:
     image: php:8.2-apache
     container_name: apache-php
@@ -10,6 +11,7 @@ services:
     depends_on:
       - db
 
+  # Base de Datos para Laravel y Apache-PHP
   db:
     image: mysql:8.0
     container_name: mysql-db
@@ -22,6 +24,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+  # Servidor para Laravel 
   laravel-app:              
     image: php:8.2-apache
     container_name: laravel-app
@@ -33,6 +36,7 @@ services:
     depends_on:
       - db
 
+  # PHPMyAdmin 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
@@ -45,22 +49,24 @@ services:
     depends_on:
       - db
 
+  # WordPress 
   wordpress:                
     image: wordpress:latest 
     container_name: wp_basic 
     restart: always 
     ports:                  
-      - "8083:80" 
+      - "8085:80" # <--- CAMBIADO A 8085 para evitar el error de permisos
     environment:            
       WORDPRESS_DB_HOST: wp_db 
       WORDPRESS_DB_USER: wordpress 
       WORDPRESS_DB_PASSWORD: wordpress 
       WORDPRESS_DB_NAME: wordpress 
     volumes:                
-      - wp_data:/var/www/html
+      - ./wordpress:/var/www/html 
     depends_on:             
       - wp_db               
 
+  # Base de Datos exclusiva para WordPress
   wp_db:                    
     image: mysql:8.0   
     container_name: wp_db   
@@ -75,5 +81,4 @@ services:
 
 volumes:
   db_data:    
-  wp_data:    
-  wp_db_data: 
+  wp_db_data:
